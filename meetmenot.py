@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import json
 import sys
 
 import gcal
@@ -20,18 +21,26 @@ def main(calendar='primary'):
     events = gcal.list_events(calendar,
                               now.isoformat() + 'Z',
                               (now + full_day).isoformat() + 'Z')
-    errors = {}
+
+    output = {}
+
     heuristics = get_heuristics()
+
     for event in events:
         errors = []
+        creator = ('email' in event['creator'] and
+                   event['creator']['email'] or '?')
 
         for fname, heuristic in heuristics.iteritems():
             invalid, message = heuristic(event)
             if invalid:
                 errors.append(message)
 
-        for error in errors:
-            print(event['summary'], error)
+        output[event['id']] = {'summary': event['summary'],
+                               'creator': creator,
+                               'errors': errors}
+
+    print json.dumps(output)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
