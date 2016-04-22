@@ -51,6 +51,7 @@ def main(calendar='primary'):
                                'creator': creator,
                                'start': get_date(event['start']),
                                'end': get_date(event['end']),
+                               'attendees': [a['email'] for a in event['attendees']],
                                'errors': errors}
 
     print json.dumps(output)
