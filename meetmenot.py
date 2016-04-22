@@ -22,12 +22,15 @@ def main():
     errors = {}
     heuristics = get_heuristics()
     for event in events:
+        errors = []
+
         for fname, heuristic in heuristics.iteritems():
             invalid, message = heuristic(event)
             if invalid:
-                errors[event['id']] = (event, message)
-        for bad_event in errors:
-            print(event, message)
+                errors.append(message)
+
+        for error in errors:
+            print(event['summary'], error)
 
 if __name__ == '__main__':
     main()
