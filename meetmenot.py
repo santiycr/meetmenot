@@ -3,9 +3,20 @@
 import datetime
 import json
 import sys
+from datetime import datetime as dt
 
 import gcal
 from heuristics import get_heuristics
+
+
+def get_date(x):
+    if 'date' in x:
+        return x['date']
+    elif 'dateTime' in x:
+        # 2016-04-14T22:00:11.000Z
+        date = dt.strptime(x['dateTime'][:19], '%Y-%m-%dT%H:%M:%S')
+        return str(date.month) + '/' + str(date.day) + ' ' + str(date.hour) + ':' + str(date.minute)
+    return '?'
 
 
 def main(calendar='primary'):
@@ -38,6 +49,8 @@ def main(calendar='primary'):
 
         output[event['id']] = {'summary': event['summary'],
                                'creator': creator,
+                               'start': get_date(event['start']),
+                               'end': get_date(event['end']),
                                'errors': errors}
 
     print json.dumps(output)
