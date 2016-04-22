@@ -47,6 +47,14 @@ def main(calendar='primary'):
             if invalid:
                 errors.append(message)
 
+        # If this is a reminder type of event (no other attendees besides the
+        # creator), then ditch any errors.
+        if (('attendees' in event and 'email' in event['attendees'] and
+             len(event['attendees']) == 1 and
+             event['attendees']['email'] == creator) or
+            ('attendees' not in event or len(event['attendees']) == 0)):
+            errors = []
+
         output[event['id']] = {'summary': event['summary'],
                                'creator': creator,
                                'start': get_date(event['start']),
