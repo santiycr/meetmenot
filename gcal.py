@@ -38,7 +38,7 @@ def get_credentials():
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
         credentials = tools.run(flow, store)
-        print('Storing credentials to ' + credential_path)
+        # print('Storing credentials to ' + credential_path)
     return credentials
 
 
@@ -52,7 +52,7 @@ def list_events(email, timeMin, timeMax):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    print('Getting the upcoming 10 events')
+    # print('Getting the upcoming 10 events')
     eventsResult = service.events().list(
         calendarId=email, timeMin=timeMin, timeMax=timeMax, singleEvents=True,
         orderBy='startTime').execute()
