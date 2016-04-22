@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import datetime
+import sys
 
 import gcal
 from heuristics import get_heuristics
 
 
-def main():
+def main(calendar='primary'):
     """
     Main MeetMeNot engine
 
@@ -16,7 +17,7 @@ def main():
 
     now = datetime.datetime.utcnow()
     full_day = datetime.timedelta(days=1)
-    events = gcal.list_events('primary',
+    events = gcal.list_events(calendar,
                               now.isoformat() + 'Z',
                               (now + full_day).isoformat() + 'Z')
     errors = {}
@@ -33,4 +34,9 @@ def main():
             print(event['summary'], error)
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) == 1:
+        main()
+    elif len(sys.argv) == 2:
+        main(sys.argv[1])
+    else:
+        print 'Usage: %s [calendar/email]' % sys.argv[0]
